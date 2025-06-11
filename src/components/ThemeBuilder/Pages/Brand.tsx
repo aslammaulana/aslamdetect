@@ -1,5 +1,9 @@
 import Link from "next/link";
 import React from "react";
+<<<<<<< HEAD
+=======
+import { BsArrowRight } from "react-icons/bs";
+>>>>>>> 5f6f6da59dd91789fc17dc1553fb8c08bbd07be8
 import { FiArrowUpRight } from "react-icons/fi";
 
 type BrandStrategyCardProps = {

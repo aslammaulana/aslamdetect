@@ -1,6 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+<<<<<<< HEAD
+=======
+import LogoCarousel from './Intro2'
+import SwiperBasic from './Intro2'
+>>>>>>> 5f6f6da59dd91789fc17dc1553fb8c08bbd07be8
 import LogoGrid from './LogoGrid'
 
 export default function Intro() {
