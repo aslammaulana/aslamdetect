@@ -22,7 +22,7 @@ export default function Product() {
                                    CRAFTING
                               </p>
                               <p className=" text-center font-bold text-[30px]">
-                                   VALUABLE
+                                   VALUABLE I
                               </p>
                          </div>
                          <p className="font-forum text-[100px] font-medium">IMPACT</p>

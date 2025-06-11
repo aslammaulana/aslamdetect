@@ -19,6 +19,7 @@ export default function Page() {
       <Header />
       <Intro />
       <Product />
+      
       <div className="h-[500px]" />
     </>
   );
