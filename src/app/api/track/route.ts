@@ -1,3 +1,4 @@
+import { supabase } from '../../../../lib/supabase';
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,52 +10,53 @@ type LocationData = {
 };
 
 export async function GET(req: NextRequest) {
-     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '0.0.0.0';
-   
-     let location: LocationData = {};
-   
-     try {
-       const locationRes = await fetch(`https://ipapi.co/${ip}/json/`);
-       location = await locationRes.json();
-     } catch (err) {
-       console.error('Gagal mengambil data lokasi:', err);
-     }
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '0.0.0.0';
 
-  // Ambil cookie session_id
+  let location: LocationData = {};
+  try {
+    const res = await fetch(`https://ipapi.co/${ip}/json/`);
+    location = await res.json();
+  } catch (e) {
+    console.error('Lokasi error:', e);
+  }
+
+  // Ambil session_id dari cookies
   const cookies = req.cookies;
   let sessionId = cookies.get('session_id')?.value;
 
-  const responseBody = {
-    sessionId: '',
+  if (!sessionId) {
+    sessionId = uuidv4();
+  }
+
+  // Simpan data ke Supabase
+  await supabase.from('tracking_logs').insert({
+    session_id: sessionId,
+    ip,
+    city: location.city,
+    country: location.country_name,
+    region: location.region,
+    org: location.org,
+  });
+
+  // Buat response JSON
+  const response = NextResponse.json({
+    sessionId,
     location: {
       city: location.city,
       country: location.country_name,
       region: location.region,
       org: location.org,
     },
-  };
+  });
 
-  const response = NextResponse.json(responseBody);
-
-  // Jika belum ada session_id, buat dan set cookie
-  if (!sessionId) {
-    sessionId = uuidv4();
+  // Set cookie jika belum ada
+  if (!cookies.get('session_id')) {
     response.cookies.set('session_id', sessionId, {
       httpOnly: true,
       path: '/',
       maxAge: 60 * 60 * 24 * 7, // 7 hari
     });
   }
-
-  // Tambahkan sessionId ke response
-  responseBody.sessionId = sessionId;
-
-  // Log ke server
-  console.log({
-    sessionId,
-    ip,
-    location: responseBody.location,
-  });
 
   return response;
 }
