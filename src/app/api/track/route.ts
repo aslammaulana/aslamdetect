@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Simpan data ke Supabase
-  await supabase.from('tracking_logs').insert({
+  await supabase.from('Detect').insert({
     session_id: sessionId,
     ip,
     city: location.city,
